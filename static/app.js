@@ -60,3 +60,31 @@ async function copyEmail() {
 }
 
 copyButton?.addEventListener("click", copyEmail);
+
+function setupFilter({ buttons, items, key }) {
+  const buttonList = Array.from(document.querySelectorAll(buttons));
+  const itemList = Array.from(document.querySelectorAll(items));
+  if (buttonList.length === 0 || itemList.length === 0) return;
+
+  function apply(value) {
+    itemList.forEach((item) => {
+      const match = value === "all" || item.dataset[key] === value;
+      item.classList.toggle("is-hidden", !match);
+    });
+  }
+
+  buttonList.forEach((button) => {
+    button.addEventListener("click", () => {
+      const value = button.dataset[key];
+      buttonList.forEach((other) => {
+        const isActive = other === button;
+        other.classList.toggle("is-active", isActive);
+        other.setAttribute("aria-pressed", String(isActive));
+      });
+      apply(value);
+    });
+  });
+}
+
+setupFilter({ buttons: ".skill-filter", items: ".domain", key: "domain" });
+setupFilter({ buttons: ".tl-filter", items: ".track-item", key: "cat" });
